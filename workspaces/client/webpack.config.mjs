@@ -1,11 +1,13 @@
 import path from 'node:path';
 import webpack from 'webpack';
 import TerserPlugin from 'terser-webpack-plugin';
+import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 
 /** @type {import('webpack').Configuration} */
 const config = {
   entry: './src/main.tsx',
   mode: 'production',
+
   experiments: {
     asyncWebAssembly: true,
   },
@@ -46,13 +48,14 @@ const config = {
         resourceQuery: /raw/,
         type: 'asset/source',
       },
-      {
-        resourceQuery: /arraybuffer/,
-        type: 'javascript/auto',
-        use: {
-          loader: 'arraybuffer-loader',
-        },
-      },
+
+      // {
+      //   resourceQuery: /arraybuffer/,
+      //   type: 'javascript/auto',
+      //   use: {
+      //     loader: 'arraybuffer-loader',
+      //   },
+      // },
     ],
   },
 
@@ -67,31 +70,26 @@ const config = {
     filename: 'main.js',
     path: path.resolve(import.meta.dirname, './dist'),
     publicPath: 'auto',
+    assetModuleFilename: 'assets/[name][ext]',
   },
 
   plugins: [
     new webpack.EnvironmentPlugin({
       API_BASE_URL: '/api',
     }),
+    new BundleAnalyzerPlugin({
+      analyzerMode: 'static',
+      openAnalyzer: true,
+      reportFilename: 'bundle-report.html',
+    }),
   ],
 
   resolve: {
     alias: {
-      '@ffmpeg/core$': path.resolve(
-        import.meta.dirname,
-        'node_modules',
-        '@ffmpeg/core/dist/umd/ffmpeg-core.js'
-      ),
-      '@ffmpeg/core/wasm$': path.resolve(
-        import.meta.dirname,
-        'node_modules',
-        '@ffmpeg/core/dist/umd/ffmpeg-core.wasm'
-      ),
+      //'@ffmpeg/core$': path.resolve(import.meta.dirname, 'node_modules', '@ffmpeg/core/dist/umd/ffmpeg-core.js'),
+      //'@ffmpeg/core/wasm$': path.resolve(import.meta.dirname, 'node_modules', '@ffmpeg/core/dist/umd/ffmpeg-core.wasm'),
     },
-    extensions: [
-      '.js', '.cjs', '.mjs', '.ts',
-      '.cts', '.mts', '.tsx', '.jsx',
-    ],
+    extensions: ['.js', '.cjs', '.mjs', '.ts', '.cts', '.mts', '.tsx', '.jsx'],
   },
 };
 
