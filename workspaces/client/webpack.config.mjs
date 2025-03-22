@@ -1,12 +1,15 @@
 import path from 'node:path';
-
 import webpack from 'webpack';
+import TerserPlugin from 'terser-webpack-plugin';
 
 /** @type {import('webpack').Configuration} */
 const config = {
-  devtool: 'inline-source-map',
   entry: './src/main.tsx',
-  mode: 'none',
+  mode: 'production',
+  experiments: {
+    asyncWebAssembly: true,
+  },
+
   module: {
     rules: [
       {
@@ -24,6 +27,7 @@ const config = {
                 {
                   corejs: '3.41',
                   forceAllTransforms: true,
+                  modules: false,
                   targets: 'defaults',
                   useBuiltIns: 'entry',
                 },
@@ -51,6 +55,12 @@ const config = {
       },
     ],
   },
+
+  optimization: {
+    minimize: true,
+    minimizer: [new TerserPlugin()],
+  },
+
   output: {
     chunkFilename: 'chunk-[contenthash].js',
     chunkFormat: false,
@@ -58,16 +68,30 @@ const config = {
     path: path.resolve(import.meta.dirname, './dist'),
     publicPath: 'auto',
   },
+
   plugins: [
-    new webpack.optimize.LimitChunkCountPlugin({ maxChunks: 1 }),
-    new webpack.EnvironmentPlugin({ API_BASE_URL: '/api', NODE_ENV: '' }),
+    new webpack.EnvironmentPlugin({
+      API_BASE_URL: '/api',
+    }),
   ],
+
   resolve: {
     alias: {
-      '@ffmpeg/core$': path.resolve(import.meta.dirname, 'node_modules', '@ffmpeg/core/dist/umd/ffmpeg-core.js'),
-      '@ffmpeg/core/wasm$': path.resolve(import.meta.dirname, 'node_modules', '@ffmpeg/core/dist/umd/ffmpeg-core.wasm'),
+      '@ffmpeg/core$': path.resolve(
+        import.meta.dirname,
+        'node_modules',
+        '@ffmpeg/core/dist/umd/ffmpeg-core.js'
+      ),
+      '@ffmpeg/core/wasm$': path.resolve(
+        import.meta.dirname,
+        'node_modules',
+        '@ffmpeg/core/dist/umd/ffmpeg-core.wasm'
+      ),
     },
-    extensions: ['.js', '.cjs', '.mjs', '.ts', '.cts', '.mts', '.tsx', '.jsx'],
+    extensions: [
+      '.js', '.cjs', '.mjs', '.ts',
+      '.cts', '.mts', '.tsx', '.jsx',
+    ],
   },
 };
 
