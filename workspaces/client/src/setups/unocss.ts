@@ -46,7 +46,7 @@ async function init() {
         presetIcons({
           scale: 1.2,
           warn: true,
-          collections: {},
+          cdn: 'https://esm.sh/',
         }),
       ],
       include: [/i-[\w:-]+/],
