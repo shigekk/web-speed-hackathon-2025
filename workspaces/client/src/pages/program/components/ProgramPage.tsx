@@ -10,11 +10,11 @@ import { createStore } from '@wsh-2025/client/src/app/createStore';
 //import { Player } from '@wsh-2025/client/src/features/player/components/Player';
 import { PlayerType } from '@wsh-2025/client/src/features/player/constants/player_type';
 import { useProgramById } from '@wsh-2025/client/src/features/program/hooks/useProgramById';
-import { RecommendedSection } from '@wsh-2025/client/src/features/recommended/components/RecommendedSection';
+//import { RecommendedSection } from '@wsh-2025/client/src/features/recommended/components/RecommendedSection';
 import { useRecommended } from '@wsh-2025/client/src/features/recommended/hooks/useRecommended';
-import { SeriesEpisodeList } from '@wsh-2025/client/src/features/series/components/SeriesEpisodeList';
+//import { SeriesEpisodeList } from '@wsh-2025/client/src/features/series/components/SeriesEpisodeList';
 import { useTimetable } from '@wsh-2025/client/src/features/timetable/hooks/useTimetable';
-import { PlayerController } from '@wsh-2025/client/src/pages/program/components/PlayerController';
+//import { PlayerController } from '@wsh-2025/client/src/pages/program/components/PlayerController';
 import { usePlayerRef } from '@wsh-2025/client/src/pages/program/hooks/usePlayerRef';
 
 const Player = lazy(() =>
@@ -22,6 +22,20 @@ const Player = lazy(() =>
     .then((m) => ({ default: m.Player }))
 );
 
+const PlayerController = lazy(() =>
+  import('@wsh-2025/client/src/pages/program/components/PlayerController')
+    .then((m) => ({ default: m.PlayerController }))
+);
+
+const RecommendedSection = lazy(() =>
+  import('@wsh-2025/client/src/features/recommended/components/RecommendedSection')
+    .then((m) => ({ default: m.RecommendedSection }))
+);
+
+const SeriesEpisodeList = lazy(() =>
+  import('@wsh-2025/client/src/features/series/components/SeriesEpisodeList')
+    .then((m) => ({ default: m.SeriesEpisodeList }))
+);
 export const prefetch = async (store: ReturnType<typeof createStore>, { programId }: Params) => {
   invariant(programId);
 
